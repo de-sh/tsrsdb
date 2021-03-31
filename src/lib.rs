@@ -1,4 +1,4 @@
-use std::{fs::File, path::PathBuf, time::{SystemTime, UNIX_EPOCH}};
+use std::{fs::{File, OpenOptions}, path::PathBuf, time::{SystemTime, UNIX_EPOCH}};
 
 const NORM_CHUNK_SIZE: usize = 1000;
 
@@ -31,9 +31,9 @@ impl<T: Clone, V: Clone> TsDb<T, V> {
             config,
             head: vec![],
             mmap: vec![],
-            wal: match File::open(wal_path.clone()) {
+            wal: match OpenOptions::new().append(true).open(wal_path.clone()) {
                 Ok(file) => file,
-                Err(_) => File::create(wal_path).unwrap()
+                Err(_) => OpenOptions::new().write(true).create(true).open(wal_path).unwrap()
             },
             chunk_len: 0
         }
