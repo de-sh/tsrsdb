@@ -44,7 +44,7 @@ impl<T: Clone, V: Clone> TsDb<T, V> {
             self.head.push((time, value)); 
         } else {
             self.mmap.push(self.head.clone());
-            self.head = vec![]
+            self.head = vec![(time, value)]
         }
     }
 }
@@ -57,5 +57,6 @@ fn create_tsdb_test() {
         max_chunk_size: Some(1000)
     });
 
-    db.insert(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs_f64(), 1000)
+    let time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs_f64();
+    db.insert(time, 1000);
 }
